@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Замовлення #{{ order.id }} - Ресторан</title>
+    <!-- Підключення Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- Навігація -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🍽️ Ресторан</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'dish_list' %}">Меню</a>
+                <a class="nav-link" href="{% url 'cart_detail' %}">Кошик</a>
+                <a class="nav-link" href="{% url 'order_history' %}">Мої замовлення</a>
+                <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Головний вміст -->
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Деталі замовлення #{{ order.id }}</h2>
+            <a href="{% url 'order_history' %}" class="btn btn-outline-secondary btn-sm">Назад до історії</a>
+        </div>
+
+        <div class="row">
+            <!-- Інформація про замовлення -->
+            <div class="col-md-8 mb-4">
+                <div class="bg-white p-4 rounded shadow-sm mb-4">
+                    <h4 class="mb-3">Склад замовлення</h4>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Страва</th>
+                                    <th>Ціна</th>
+                                    <th>Кількість</th>
+                                    <th>Сума</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>
+                                        {% if item.dish %}
+                                            <a href="{% url 'dish_detail' item.dish.pk %}" class="text-decoration-none">{{ item.dish.name }}</a>
+                                        {% else %}
+                                            Видалена страва
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.price }} грн</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.total_price }} грн</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-3">
+                        <h4 class="fw-bold">Загальна сума: <span class="text-success">{{ order.total_price }} грн</span></h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Додаткова інформація -->
+            <div class="col-md-4">
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h4 class="mb-3">Інформація</h4>
+                    <p><strong>Статус:</strong> <span class="badge bg-secondary">{{ order.get_status_display }}</span></p>
+                    <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Отримувач:</strong> {{ order.full_name }}</p>
+                    <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                    <p><strong>Адреса:</strong> {{ order.address }}</p>
+                    <p><strong>Оплата:</strong> {{ order.get_payment_method_display }}</p>
+
+                    <a href="{% url 'repeat_order' order.pk %}" class="btn btn-success w-100 mt-3">Повторити замовлення</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Підключення Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

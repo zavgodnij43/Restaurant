@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Оформлення замовлення - Ресторан</title>
+    <!-- Підключення Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- Навігація -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🍽️ Ресторан</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'dish_list' %}">Меню</a>
+                <a class="nav-link" href="{% url 'cart_detail' %}">Кошик</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'order_history' %}">Мої замовлення</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">Увійти</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Головний вміст -->
+    <div class="container">
+        <h2 class="mb-4">Оформлення замовлення</h2>
+
+        <div class="row">
+            <!-- Форма замовлення -->
+            <div class="col-md-8 mb-4">
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        <div class="mb-3">
+                            <label for="{{ form.full_name.id_for_label }}" class="form-label">Повне ім'я</label>
+                            {{ form.full_name }}
+                            {{ form.full_name.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Телефон</label>
+                            {{ form.phone }}
+                            {{ form.phone.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Адреса доставки</label>
+                            {{ form.address }}
+                            {{ form.address.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.payment_method.id_for_label }}" class="form-label">Спосіб оплати</label>
+                            {{ form.payment_method }}
+                            {{ form.payment_method.errors }}
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 btn-lg">Підтвердити замовлення</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Деталі кошика (підсумок) -->
+            <div class="col-md-4">
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h4 class="mb-3">Ваше замовлення</h4>
+                    <ul class="list-group mb-3">
+                        {% for item in cart %}
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">{{ item.dish.name }}</h6>
+                                <small class="text-muted">Кількість: {{ item.quantity }}</small>
+                            </div>
+                            <span class="text-muted">{{ item.total_price }} грн</span>
+                        </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Загальна сума</span>
+                            <strong>{{ cart.get_total_price }} грн</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Підключення Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

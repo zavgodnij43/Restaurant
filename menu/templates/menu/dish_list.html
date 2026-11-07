@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню - Ресторан</title>
+    <!-- Підключення Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- Навігація -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🍽️ Ресторан</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="{% url 'dish_list' %}">Меню</a>
+                <a class="nav-link" href="{% url 'cart_detail' %}">Кошик</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'order_history' %}">Мої замовлення</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">Увійти</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Головний вміст -->
+    <div class="container">
+        <h2 class="mb-4">Наше меню</h2>
+        
+        <div class="row">
+            {% for dish in dishes %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" class="card-img-top" alt="{{ dish.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span>Немає фото</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <a href="{% url 'dish_detail' dish.pk %}" class="text-decoration-none text-dark">{{ dish.name }}</a>
+                        </h5>
+                        <p class="card-text text-muted flex-grow-1">{{ dish.description|truncatechars:100 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fs-5 fw-bold text-success">{{ dish.price }} грн</span>
+                            <form action="{% url 'cart_add' dish.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm">У кошик</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">Наразі немає доступних страв у меню.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Підключення Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

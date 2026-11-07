@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Мої замовлення - Ресторан</title>
+    <!-- Підключення Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- Навігація -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🍽️ Ресторан</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'dish_list' %}">Меню</a>
+                <a class="nav-link" href="{% url 'cart_detail' %}">Кошик</a>
+                <a class="nav-link active" href="{% url 'order_history' %}">Мої замовлення</a>
+                <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Головний вміст -->
+    <div class="container">
+        <h2 class="mb-4">Історія замовлень</h2>
+
+        {% if orders %}
+            <div class="bg-white p-4 rounded shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID замовлення</th>
+                                <th>Дата</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td><strong>#{{ order.id }}</strong></td>
+                                <td class="text-muted">{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                <td>{{ order.total_price }} грн</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ order.get_status_display }}</span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'order_detail' order.pk %}" class="btn btn-sm btn-outline-primary me-1">Деталі</a>
+                                    <a href="{% url 'repeat_order' order.pk %}" class="btn btn-sm btn-outline-success">Повторити</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5 bg-white rounded shadow-sm">
+                <p class="fs-4 text-muted mb-3">У вас ще немає замовлень.</p>
+                <a href="{% url 'dish_list' %}" class="btn btn-primary">Перейти до меню</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Підключення Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

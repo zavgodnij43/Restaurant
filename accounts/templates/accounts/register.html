@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Реєстрація - Ресторан</title>
+    <!-- Підключення Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 20px 0;">
+
+    <div class="card shadow-sm p-4" style="width: 450px;">
+        <h3 class="text-center mb-4">Реєстрація в ресторані</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <div class="form-text text-muted small">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary w-100 mt-2">Зареєструватися</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">Вже маєте акаунт? <a href="{% url 'login' %}">Увійти</a></small>
+        </div>
+        <div class="text-center mt-2">
+            <small><a href="{% url 'home' %}" class="text-decoration-none">← На головну</a></small>
+        </div>
+    </div>
+
+    <!-- Підключення Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
