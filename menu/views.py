@@ -8,8 +8,9 @@ class HomeView(TemplateView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context["popular_dishes"] = Dish.objects.filter(is_available=True)[:6]
-    context["new_dishes"] = Dish.objects.filter(is_available=True).order_by(
+    # Змінили is_available на available
+    context["popular_dishes"] = Dish.objects.filter(available=True)[:6]
+    context["new_dishes"] = Dish.objects.filter(available=True).order_by(
         "-created_at"
     )[:4]
     return context
@@ -21,7 +22,8 @@ class DishListView(ListView):
   context_object_name = "dishes"
 
   def get_queryset(self):
-    queryset = Dish.objects.filter(is_available=True)
+    # Змінили is_available на available
+    queryset = Dish.objects.filter(available=True)
     category_slug = self.request.GET.get("category")
     query = self.request.GET.get("q")
 
